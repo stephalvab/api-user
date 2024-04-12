@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
                 .status(true)
                 .phones(this.builderListPhones(userDto.getPhones(), uid))
                 .lastLogin(new Date())
-//                .token(UUID.randomUUID().toString())
+                .token(uid)
                 .build();
     }
 
@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
                 .id(user.getUserId())
                 .name(user.getName())
                 .email(user.getEmail())
-                .token("")
+                .token(user.getToken())
                 .isactive(user.isStatus())
                 .last_login(Util.convertirDateToString(user.getLastLogin()))
                 .created(Util.convertirDateToString(user.getCreatedAt()))
