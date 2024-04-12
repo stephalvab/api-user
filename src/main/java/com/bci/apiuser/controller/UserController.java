@@ -1,8 +1,11 @@
 package com.bci.apiuser.controller;
 
+import com.bci.apiuser.exception.MessageException;
 import com.bci.apiuser.model.dto.UserDto;
+import com.bci.apiuser.service.UserService;
 import jakarta.validation.Valid;
-import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -13,14 +16,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/user")
-@Log4j2
-@Validated
 public class UserController {
 
+    @Autowired
+    UserService userService;
 
+    @Validated
     @PostMapping
-    public ResponseEntity<?> createUser(@Valid @RequestBody UserDto userDto) {
-        log.info("createUser");
-            return new ResponseEntity<>("ok user", HttpStatus.CREATED);
+    public ResponseEntity<?> createUser(@RequestBody @Valid UserDto userDto) {
+        try {
+            return new ResponseEntity<>(userService.saveUser(userDto), HttpStatus.CREATED);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(MessageException.Message(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage()));
+        }
     }
 }
